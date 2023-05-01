@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic nested api</title>
+</head>
+
+<body>
+    <input type="text" id="search" placeholder="Search"><button id="search-btn">Search</button>
+    <div id="user-name"></div>
+
+    <div id="user-details"></div>
+
+    <script>
+
+        document.getElementById('search-btn').addEventListener('click', function () {
+            const searchField = document.getElementById('search');
+            const searchText = parseInt(searchField.value);
+            console.log(searchText);
+
+            searchText.value = '';            
+
+            const url = 'https://jsonplaceholder.typicode.com/users';
+
+            fetch(url)
+                .then((resp) => resp.json())
+                .then(function (data) {
+                    data = data.slice(0, searchText);
+                    const users = document.getElementById('user-name');
+                    users.innerHTML = '';
+                    for (let i = 0; i < data.length; i++) {
+                        const element = data[i];
+                        users.innerHTML += `<p> Name: <h1 class="text-bold">${element.name}</h1> <button onClick="handleClick(${element.id})">Show me</button> </p>`;
+                        // console.log(element);
+                    }
+                })
+
+
+        })
+
+
+
+        function handleClick(userId) {
+            fetch(`https://jsonplaceholder.typicode.com/users/${userId}`)
+                .then((resp) => resp.json())
+                .then(function (data) {
+                    const userDetails = document.getElementById('user-details');
+                    userDetails.innerHTML = `<p> Name: ${data.name} </p> <p> Email: ${data.email} </p> <p> Phone: ${data.phone} </p> <p> Website: ${data.website} </p> <p> Company: ${data.company.name} </p> <p> Address: ${data.address.street} </p> <p> City: ${data.address.city} </p> <p> Zipcode: ${data.address.zipcode} </p> <p> Geo: ${data.address.geo.lat} </p> <p> Geo: ${data.address.geo.lng} </p> <p> Username: ${data.username} </p> <p> Id: ${data.id} </p> <p> CatchPhrase: ${data.company.catchPhrase} </p>`
+
+                })
+        }
+    </script>
+
+</body>
+
+</html>
